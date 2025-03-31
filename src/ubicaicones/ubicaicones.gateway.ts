@@ -1,7 +1,5 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { UbicaiconesService } from './ubicaicones.service';
-import { CreateUbicaiconeDto } from './dto/create-ubicaicone.dto';
-import { UpdateUbicaiconeDto } from './dto/update-ubicaicone.dto';
 import { Server, Socket } from 'socket.io';
 
 interface RecibirUbicacion {
@@ -10,7 +8,7 @@ interface RecibirUbicacion {
   lng: number;
 }
 
-@WebSocketGateway({cors: true, namespace: 'ubicaicones'})
+@WebSocketGateway({cors: true, namespace: 'ubicaciones'})
 export class UbicaiconesGateway  implements OnGatewayConnection, OnGatewayDisconnect{
 
   @WebSocketServer() wss: Server;
