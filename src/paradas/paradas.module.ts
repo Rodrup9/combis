@@ -7,6 +7,7 @@ import { Parada } from './entities/parada.entity';
 @Module({
   controllers: [ParadasController],
   providers: [ParadasService],
-  imports:[TypeOrmModule.forFeature([Parada])]
+  imports:[TypeOrmModule.forFeature([Parada])],
+  exports: [ParadasService]
 })
 export class ParadasModule {}

@@ -11,11 +11,18 @@ export class Bus {
     @Column('text')
     numero: string;
 
-    @ManyToOne(() => Ruta, ruta => ruta.buses)
+    @ManyToOne(() => Ruta, ruta => ruta.buses, { nullable: true })
     ruta: Ruta;
 
-    @OneToOne(() => Usuario)
+    @OneToOne(() => Usuario, { nullable: true })
     @JoinColumn()
     operador: Usuario;
+
+    @OneToOne(() => Usuario, { nullable: true })
+    @JoinColumn()
+    owner: Usuario
+
+    @Column('text')
+    matricula: string;
 
 }

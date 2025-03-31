@@ -21,11 +21,6 @@ export class Parada {
     })
     descripcion: string;
 
-    @Column('text',{
-        nullable: true,
-    })
-    descripcion: string;
-
     @OneToMany(() => RutaParada, rutaParada => rutaParada.parada, { eager: true })
     rutaParadas: RutaParada[];
 

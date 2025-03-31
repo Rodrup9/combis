@@ -19,7 +19,7 @@ export class RutaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.rutaService.findOne(+id);
+    return this.rutaService.findOne(id);
   }
 
   @Patch(':id')
