@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutenticationModule } from './autentication/autentication.module';
 import { RutaModule } from './ruta/ruta.module';
+import { RutaParadaModule } from './ruta-parada/ruta-parada.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { RutaModule } from './ruta/ruta.module';
     ParadasModule, 
     BusesModule, 
     UbicaiconesModule, 
-    EstadoBusModule, AutenticationModule, RutaModule],
+    EstadoBusModule, AutenticationModule, RutaModule, RutaParadaModule],
   controllers: [AppController],
   providers: [AppService],
 })

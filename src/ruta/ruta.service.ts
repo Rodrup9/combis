@@ -1,11 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRutaDto } from './dto/create-ruta.dto';
 import { UpdateRutaDto } from './dto/update-ruta.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Ruta } from './entities/ruta.entity';
+import { Repository } from 'typeorm';
+import { BusesService } from 'src/buses/buses.service';
+import { ParadasService } from 'src/paradas/paradas.service';
 
 @Injectable()
 export class RutaService {
-  create(createRutaDto: CreateRutaDto) {
-    return 'This action adds a new ruta';
+  constructor(
+    @InjectRepository(Ruta)
+    private readonly rutaRepository: Repository<Ruta>,
+    private readonly busesService: BusesService,
+    private readonly paradasService: ParadasService,
+  ) {}
+
+  async create(createRutaDto: CreateRutaDto) {
+    const { combis, paradas, ...rutaRest } = createRutaDto;
+
+    const buses = await Promise.all(combis.map(async combi => await this.busesService.findOne(combi)))
+
+    const ruta = this.rutaRepository.create({
+      ...rutaRest,
+
+    })
   }
 
   findAll() {

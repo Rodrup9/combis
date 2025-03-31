@@ -10,5 +10,6 @@ import { Bus } from './entities/bus.entity';
   ],
   controllers: [BusesController],
   providers: [BusesService],
+  exports: [BusesService]
 })
 export class BusesModule {}
