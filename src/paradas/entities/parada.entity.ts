@@ -15,6 +15,11 @@ export class Parada {
     @Column('decimal', { precision: 10, scale: 6 })
     longitud: number;
 
+    @Column('text',{
+        nullable: true,
+    })
+    descripcion: string;
+
     
 
     
