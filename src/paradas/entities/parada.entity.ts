@@ -19,8 +19,5 @@ export class Parada {
         nullable: true,
     })
     descripcion: string;
-
-    
-
-    
+  
 }
