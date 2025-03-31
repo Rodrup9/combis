@@ -24,11 +24,11 @@ export class BusesController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBusDto: UpdateBusDto) {
-    return this.busesService.update(+id, updateBusDto);
+    return this.busesService.update(id, updateBusDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.busesService.remove(+id);
+    return this.busesService.remove(id);
   }
 }

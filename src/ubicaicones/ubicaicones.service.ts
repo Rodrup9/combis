@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateUbicaiconeDto } from './dto/create-ubicaicone.dto';
 import { UpdateUbicaiconeDto } from './dto/update-ubicaicone.dto';
 import { Socket } from 'socket.io';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Ubicaicones } from './entities/ubicaicone.entity';
 
 interface ConnectedClients {
   [id: string] : Socket
@@ -19,6 +22,12 @@ export class UbicaiconesService {
 
   private ubicationsSave: Ubications[] = []
 
+  constructor(
+    @InjectRepository(Ubicaicones)
+    private readonly ubicaiconesRepository: Repository<Ubicaicones>,
+
+  ) {}
+
   registerClient(client: Socket) {
     this.connectedClients[client.id] = client;    
   }
@@ -33,7 +42,6 @@ export class UbicaiconesService {
 
   getUbication(ubications: Ubications) {
     const ubi = this.ubicationsSave.filter(u => u.id !== ubications.id);
-
     this.ubicationsSave = [...ubi, ubications];
   }
 

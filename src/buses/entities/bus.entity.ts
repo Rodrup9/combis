@@ -6,10 +6,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 export class Bus {
 
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+  id: string;
 
-    @Column('text')
-    numero: string;
+  @Column('varchar', { length: 255 })
+  nombre: string;
 
     @ManyToOne(() => Ruta, ruta => ruta.buses, { nullable: true })
     ruta: Ruta;
