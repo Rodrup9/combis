@@ -5,8 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bus } from './entities/bus.entity';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([Bus])
+  ],
   controllers: [BusesController],
   providers: [BusesService],
-  imports:[TypeOrmModule.forFeature([Bus])],
 })
 export class BusesModule {}

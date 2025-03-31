@@ -9,6 +9,7 @@ import { EstadoBusModule } from './estado-bus/estado-bus.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutenticationModule } from './autentication/autentication.module';
+import { RutaModule } from './ruta/ruta.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { AutenticationModule } from './autentication/autentication.module';
     ParadasModule, 
     BusesModule, 
     UbicaiconesModule, 
-    EstadoBusModule, AutenticationModule],
+    EstadoBusModule, AutenticationModule, RutaModule],
   controllers: [AppController],
   providers: [AppService],
 })
