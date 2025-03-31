@@ -16,6 +16,16 @@ export class Parada {
     @Column('decimal', { precision: 10, scale: 6 })
     longitud: number;
 
+    @Column('text',{
+        nullable: true,
+    })
+    descripcion: string;
+
+    @Column('text',{
+        nullable: true,
+    })
+    descripcion: string;
+
     @OneToMany(() => RutaParada, rutaParada => rutaParada.parada, { eager: true })
     rutaParadas: RutaParada[];
 
