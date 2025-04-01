@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AutenticationModule } from './autentication/autentication.module';
 import { RutaModule } from './ruta/ruta.module';
 import { RutaParadaModule } from './ruta-parada/ruta-parada.module';
+import { PruebaModule } from './prueba/prueba.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { RutaParadaModule } from './ruta-parada/ruta-parada.module';
     ParadasModule, 
     BusesModule, 
     UbicaiconesModule, 
-    EstadoBusModule, AutenticationModule, RutaModule, RutaParadaModule],
+    EstadoBusModule, AutenticationModule, RutaModule, RutaParadaModule, PruebaModule],
   controllers: [AppController],
   providers: [AppService],
 })

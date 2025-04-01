@@ -4,11 +4,8 @@ import { Repository } from 'typeorm';
 import { Bus } from './entities/bus.entity';
 import { CreateBusDto } from './dto/create-bus.dto';
 import { UpdateBusDto } from './dto/update-bus.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Bus } from './entities/bus.entity';
-import { Repository } from 'typeorm';
-import { RutaService } from 'src/ruta/ruta.service';
 import { UsuariosService } from '../usuarios/usuarios.service';
+import { RutaService } from 'src/ruta/ruta.service';
 
 @Injectable()
 export class BusesService {
@@ -37,18 +34,14 @@ export class BusesService {
       ruta
     });    
   
-    try {
-      return await this.busRepository.save(bus);
-    } catch (error) {
-      throw new BadRequestException('Error al guardar el bus: ' + error.message);
-    }
+    return await this.busRepository.save(bus);
+
   }
 
 
   findAll() {
     return this.busRepository.find();
   }
-
 
   async findOne(id: string) {
     const bus = await this.busRepository.findOneBy({id});
@@ -78,5 +71,12 @@ export class BusesService {
       throw new Error('Bus no encontrado');
     }
     await this.busRepository.remove(bus); 
+  }
+
+  async findAllByRoute(rutaId: string): Promise<Bus[]> {
+    return this.busRepository.find({
+      where: { ruta: { id: rutaId } }, // Busca buses donde la ruta tenga el ID dado
+      relations: ['ruta'], // Traer la relación con la ruta
+    });
   }
 }

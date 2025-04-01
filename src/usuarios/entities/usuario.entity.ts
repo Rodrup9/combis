@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Bus } from "src/buses/entities/bus.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Usuario {
@@ -45,5 +46,11 @@ export class Usuario {
 
     @Column('text')
     rol: string;
+
+    @OneToMany(() => Bus, bus => bus.operador)
+    busesOperator: Bus[];
+
+    @OneToMany(() => Bus, bus => bus.owner)
+    busesOwners: Bus[];
 
 }

@@ -27,8 +27,8 @@ export class BusesController {
     return this.busesService.update(id, updateBusDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.busesService.remove(id);
+  @Get('busByRoute/:id')
+  findAllByRoute(@Param('id') id: string) {
+    return this.busesService.findAllByRoute(id);
   }
 }

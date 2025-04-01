@@ -1,11 +1,14 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { UbicaiconesService } from './ubicaicones.service';
 import { Server, Socket } from 'socket.io';
+import { Param } from '@nestjs/common';
 
 interface RecibirUbicacion {
   id: string;
   lat: number;
   lng: number;
+  rutaId: string;
+  busId: string;
 }
 
 @WebSocketGateway({cors: true, namespace: 'ubicaciones'})
@@ -24,14 +27,31 @@ export class UbicaiconesGateway  implements OnGatewayConnection, OnGatewayDiscon
   }
 
   @SubscribeMessage('recibirUbicacion')
-  getUbication(@MessageBody() data: RecibirUbicacion) {
-    this.ubicaiconesService.getUbication(data)
-    this.wss.emit('updateLocation', this.ubicaiconesService.updateLocation());
+  async getUbication(@MessageBody() data: RecibirUbicacion) {
+    this.ubicaiconesService.saveUbication(data);
+
+    const locations = await this.ubicaiconesService.getLocationsByRoute(data.rutaId);
+
+    this.wss.to(data.rutaId).emit('routeLocations', locations);
+    console.log(`Emitido a la sala ${data.rutaId} con ubicaciones actualizadas.`);
+    //this.wss.to(data.rutaId).emit('updateLocation', this.ubicaiconesService.updateLocation());
   }
   @SubscribeMessage('updateLocation')
   updateLocation() {
     this.wss.emit('updateLocation', this.ubicaiconesService.updateLocation());
   }
 
+  @SubscribeMessage('joinRoute')
+  joinRoute(client: Socket, rutaId: string) {
+    client.join(rutaId);
+    console.log(`Cliente ${client.id} se unió a la sala ruta/${rutaId}`);
+    client.emit('joinRoute', `Te has unido a la sala ${rutaId}`);
+  }
+
+  @SubscribeMessage('getRouteLocations')
+  async getRouteLocations(client: Socket, rutaId: string) {
+    const locations = await this.ubicaiconesService.getLocationsByRoute(rutaId);
+    client.emit('routeLocations', locations);
+  }
   
 }

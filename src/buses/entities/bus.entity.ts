@@ -1,28 +1,31 @@
 import { Ruta } from "src/ruta/entities/ruta.entity";
+import { Ubicaicones } from "src/ubicaicones/entities/ubicaicone.entity";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Bus {
 
     @PrimaryGeneratedColumn('uuid')
-  id: string;
+    id: string;
 
-  @Column('varchar', { length: 255 })
-  nombre: string;
+    @Column('text')
+    numero: string;
 
     @ManyToOne(() => Ruta, ruta => ruta.buses, { nullable: true })
     ruta: Ruta;
 
-    @OneToOne(() => Usuario, { nullable: true })
+    @ManyToOne(() => Usuario, usuario => usuario.busesOperator, { nullable: true })
     @JoinColumn()
     operador: Usuario;
 
-    @OneToOne(() => Usuario, { nullable: true })
+    @ManyToOne(() => Usuario, usuario => usuario.busesOwners, { nullable: true })
     @JoinColumn()
-    owner: Usuario
+    owner: Usuario;
 
     @Column('text')
     matricula: string;
 
+    @OneToMany(() => Ubicaicones, ubicaciones => ubicaciones.bus, { eager: true })
+    ubicaciones: Ubicaicones[]
 }
