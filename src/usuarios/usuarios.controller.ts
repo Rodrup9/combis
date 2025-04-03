@@ -17,8 +17,18 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
+  @Get('propietarios')
+  findOwners() {    
+    return this.usuariosService.findOwners();
+  }
+
+  @Get('propietarios/:id')
+  findOneOwner(@Param('id') id: string) {    
+    return this.usuariosService.findOneOwner(id);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {    
     return this.usuariosService.findOne(id);
   }
 

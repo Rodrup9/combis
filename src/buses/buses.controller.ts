@@ -7,9 +7,19 @@ import { UpdateBusDto } from './dto/update-bus.dto';
 export class BusesController {
   constructor(private readonly busesService: BusesService) {}
 
+  @Post('asignarconductor/:id')
+  asignarConductor(@Param('id') id: string, @Body('usuarioId') usuarioId: string) {
+    return this.busesService.asignarConductor(id, usuarioId);
+  }
+
   @Post()
   create(@Body() createBusDto: CreateBusDto) {
     return this.busesService.create(createBusDto);
+  }
+
+  @Get('busByRoute/:id')
+  findAllByRoute(@Param('id') id: string) {
+    return this.busesService.findAllByRoute(id);
   }
 
   @Get()
@@ -18,17 +28,19 @@ export class BusesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.busesService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const { ruta: { rutaParadas, ...ruta  }, ...bus } = await this.busesService.findOne(id);
+
+    return {
+      ...bus,
+      ruta: {
+        ...ruta,
+        paradas: rutaParadas.map(({orden, parada: { rutaParadas, ...parada }}) => {
+          return { ...parada, orden };
+        }),
+      }
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBusDto: UpdateBusDto) {
-    return this.busesService.update(id, updateBusDto);
-  }
 
-  @Get('busByRoute/:id')
-  findAllByRoute(@Param('id') id: string) {
-    return this.busesService.findAllByRoute(id);
-  }
 }

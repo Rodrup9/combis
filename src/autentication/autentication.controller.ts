@@ -8,7 +8,7 @@ export class AutenticationController {
   constructor(private readonly autenticationService: AutenticationService) {}
 
   @Post('login')
-  async login(@Body() loginUsuarioDto: LoginDto) {
+  async login(@Body() loginUsuarioDto: LoginDto) {        
     const usuario = await this.autenticationService.login(loginUsuarioDto);    
     // res.cookie('access_token', usuario.access_token, {
     //   httpOnly: true,

@@ -54,17 +54,44 @@ export class RutaService {
     return ruta;
   }
 
-  findAll() {
-    return this.rutaRepository.find();
+  async findAll() {
+    const rutas = await this.rutaRepository.find({
+      relations: ['buses', 'rutaParadas', 'rutaParadas.parada']
+    });
+    return rutas.map(({rutaParadas, ...rutaRest}) => {
+      return {
+        ...rutaRest,
+        paradas: rutaParadas.map(({orden, parada: { rutaParadas, ...parada }}) => {
+          return { ...parada, orden };
+        }),        
+      }
+    });
   }
 
   async findOne(id: string) {
-    const route = await this.rutaRepository.findOneBy({id});
-
+    const route = await this.rutaRepository.findOne({
+      where: { id },
+      relations: ['rutaParadas', 'rutaParadas.parada'], // Carga las paradas relacionadas
+    });
     if (!route)
       throw new BadRequestException('Route not found');
 
-    return route;
+    return {
+      id: route.id,
+      nombre: route.nombre,
+      paradas: route.rutaParadas.map((rp) => ({
+        id: rp.parada.id,
+        nombre: rp.parada.nombre,
+        latitud: rp.parada.latitud,
+        longitud: rp.parada.longitud,
+        orden: rp.orden,
+      })),
+      buses: route.buses.map((bus) => ({
+        id: bus.id,
+        numero: bus.numero,
+        matricula: bus.matricula,
+      })),
+    };
   }
 
   update(id: number, updateRutaDto: UpdateRutaDto) {

@@ -34,6 +34,20 @@ export class UsuariosService {
     return this.usuarioRepository.find();
   }
 
+  findOwners() {
+    return this.usuarioRepository.find({
+      where: { rol: 'dueño' },
+      relations: ['busesOwners']
+    });
+  }
+
+  findOneOwner(id: string) {
+    return this.usuarioRepository.findOne({
+      where: { id },
+      relations: ['busesOwners']
+    })
+  }
+
   async findOne(id: string) {
     const user = await this.usuarioRepository.findOneBy({id});
 

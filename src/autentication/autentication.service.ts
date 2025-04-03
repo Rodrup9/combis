@@ -15,7 +15,7 @@ export class AutenticationService {
 
   async login(loginDto: LoginDto) {
     const usuario: Usuario = await this.usuariosService.findByEmail(loginDto.correo_electronico);
-  
+    
     if (!usuario) {
       throw new NotFoundException(`Usuario con correo ${loginDto.correo_electronico} no encontrado`);
     }

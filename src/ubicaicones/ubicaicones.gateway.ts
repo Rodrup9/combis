@@ -1,7 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { UbicaiconesService } from './ubicaicones.service';
 import { Server, Socket } from 'socket.io';
-import { Param } from '@nestjs/common';
+import { Param, ParseUUIDPipe } from '@nestjs/common';
 
 interface RecibirUbicacion {
   id: string;
@@ -28,10 +28,11 @@ export class UbicaiconesGateway  implements OnGatewayConnection, OnGatewayDiscon
 
   @SubscribeMessage('recibirUbicacion')
   async getUbication(@MessageBody() data: RecibirUbicacion) {
-    this.ubicaiconesService.saveUbication(data);
+    await this.ubicaiconesService.saveUbication(data);
+    const time = await this.ubicaiconesService.checkNearbyParada(data.busId, data.rutaId, data.lat, data.lng);
 
     const locations = await this.ubicaiconesService.getLocationsByRoute(data.rutaId);
-
+    this.wss.emit('parada-llegada', {time});
     this.wss.to(data.rutaId).emit('routeLocations', locations);
     console.log(`Emitido a la sala ${data.rutaId} con ubicaciones actualizadas.`);
     //this.wss.to(data.rutaId).emit('updateLocation', this.ubicaiconesService.updateLocation());
@@ -49,7 +50,7 @@ export class UbicaiconesGateway  implements OnGatewayConnection, OnGatewayDiscon
   }
 
   @SubscribeMessage('getRouteLocations')
-  async getRouteLocations(client: Socket, rutaId: string) {
+  async getRouteLocations(client: Socket, @MessageBody('rutaId', new ParseUUIDPipe()) rutaId: string) {
     const locations = await this.ubicaiconesService.getLocationsByRoute(rutaId);
     client.emit('routeLocations', locations);
   }
