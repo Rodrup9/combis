@@ -54,5 +54,16 @@ export class UbicaiconesGateway  implements OnGatewayConnection, OnGatewayDiscon
     const locations = await this.ubicaiconesService.getLocationsByRoute(rutaId);
     client.emit('routeLocations', locations);
   }
+
+  @SubscribeMessage('paradasCercanas')
+  async findNearestParadas(
+    client: Socket,
+    data: { lat: number; lng: number; rutaId?: string }
+  ) {
+    const { lat, lng, rutaId } = data;
+
+    const paradasCercanas = await this.ubicaiconesService.findNearestParadas(lat, lng, rutaId);
+    client.emit('nearestParadasFound', paradasCercanas);
+  }
   
 }

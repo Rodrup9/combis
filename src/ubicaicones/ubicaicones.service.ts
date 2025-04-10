@@ -9,6 +9,7 @@ import { BusesService } from 'src/buses/buses.service';
 import { RutaService } from 'src/ruta/ruta.service';
 import { ParadasService } from 'src/paradas/paradas.service';
 import { Checador } from './entities/checador.entity';
+import { Parada } from 'src/paradas/entities/parada.entity';
 
 interface ConnectedClients {
   [id: string] : Socket
@@ -117,7 +118,7 @@ export class UbicaiconesService {
   }
 
   async checkNearbyParada(busId: string, rutaId: string, lat: number, lng: number) {
-    const ruta = await this.rutaService.findOne(rutaId);
+    const ruta = await this.rutaService.findOneParse(rutaId);
     const paradas = ruta.paradas.sort((a, b) => {
       console.log(a.orden - b.orden);
       return a.orden - b.orden
@@ -127,7 +128,7 @@ export class UbicaiconesService {
     
     for (const parada of paradas) {
         const distance = haversine(lat, lng, parada.latitud, parada.longitud);
-        console.log(distance);
+        console.log(distance, busId);
         
         if (distance <= 10) {
             // Guardar en la tabla de checador
@@ -142,7 +143,10 @@ export class UbicaiconesService {
             const timeDiff = lastChecador ? (new Date().getTime() - new Date(lastChecador.fecha_hora).getTime()) / 1000 : 0;
             
             // Emitir al bus que llegó
+            
             const client = this.connectedClients[busId];
+            console.log(client);
+
             client?.emit('parada-llegada', {
                 parada: parada.nombre,
                 tiempo: timeDiff,
@@ -152,6 +156,33 @@ export class UbicaiconesService {
             break;
         }
     }
+  }
+
+  async findNearestParadas(lat: number, lng: number, rutaId?: string) {
+    let paradas: Parada[] = [];
+  
+    if (rutaId) {
+      const ruta = await this.rutaService.findOne(rutaId);
+  
+      // Sacamos las paradas desde la relación intermedia
+      paradas = ruta.rutaParadas.map((rp) => rp.parada);
+    } else {
+      // Todas las paradas registradas
+      paradas = await this.paradaService.findAll(); // Asegúrate de tener este repositorio inyectado
+    }
+  
+    const distanciaMaximaMetros = 1000; // ejemplo: 1 km de distancia
+  
+    // Calcular distancias con Haversine
+    const paradasCercanas = paradas
+      .map((parada) => {
+        const distancia = haversine(lat, lng, Number(parada.latitud), Number(parada.longitud));
+        return { ...parada, distancia };
+      })
+      .filter((p) => p.distancia <= distanciaMaximaMetros)
+      .sort((a, b) => a.distancia - b.distancia);
+  
+    return paradasCercanas;
   }
 
 } 
@@ -170,3 +201,5 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number): numb
 
   return R * c;
 }
+
+

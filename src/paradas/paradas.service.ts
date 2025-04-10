@@ -43,4 +43,6 @@ export class ParadasService {
     const parada = await this.findOne(id);
     await this.paradaRepository.remove(parada);
   }
+
+
 }

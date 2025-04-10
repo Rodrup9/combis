@@ -76,6 +76,12 @@ export class RutaService {
     if (!route)
       throw new BadRequestException('Route not found');
 
+    return route;
+  }
+
+  async findOneParse(id: string) {
+    const route = await this.findOne(id);
+
     return {
       id: route.id,
       nombre: route.nombre,
@@ -101,4 +107,5 @@ export class RutaService {
   remove(id: number) {
     return `This action removes a #${id} ruta`;
   }
+
 }
